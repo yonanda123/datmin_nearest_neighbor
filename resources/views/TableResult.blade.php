@@ -67,6 +67,11 @@
                 <span>({{ $ya['x'] }}, {{ $ya['y'] }})</span>
             @endforeach
         </p>
-        
+        <p>
+            Sehingga diperoleh {{ $kelas1 }} = {{ $countKelas1 }} ; {{ $kelas2 }} = {{ $countKelas2 }}
+        </p>
+        <p>
+            Maka hasil klasifikasi adalah {{ $kelasKlasifikasi }} yaitu dengan total jumlah klasifikasi sebanyak {{ $hasilKlasifikasi }}
+        </p>
     </div>
 @endsection

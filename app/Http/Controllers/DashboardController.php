@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 
-use function PHPSTORM_META\map;
 
 class DashboardController extends Controller
 {
@@ -81,7 +79,6 @@ class DashboardController extends Controller
         foreach ($resultClass[$kelas2][1] as &$value) {
             $value = pow($value - $y, 2);
         }
-        //dd($resultClass);
 
         $result = [
             $kelas1 => array_map(function ($a, $b) {
@@ -116,35 +113,6 @@ class DashboardController extends Controller
                 'original_index' => $index, // Menyimpan indeks asli dari data
             ];
         }
-        // // Buat salinan array kepeseng
-        // $sortedKepeseng = $kepeseng;
-
-        // // Mengurutkan array salinan berdasarkan nilai_sequence dari yang terkecil ke terbesar
-        // usort($sortedKepeseng, function ($a, $b) {
-        //     if ($a['nilai_sequence'] != $b['nilai_sequence']) {
-        //         return $a['nilai_sequence'] <=> $b['nilai_sequence'];
-        //     }
-        //     // Jika nilai_sequence sama, diurutkan berdasarkan indeks asli
-        //     return $a['original_index'] <=> $b['original_index'];
-        // });
-
-        // // Menentukan peringkat berdasarkan urutan data asli
-        // $peringkat = 1;
-        // foreach ($sortedKepeseng as &$item) {
-        //     $item['peringkat'] = $peringkat;
-        //     $peringkat++;
-        // }
-
-        // // Menggabungkan peringkat yang sudah ditentukan dengan array asli
-        // foreach ($kepeseng as &$item) {
-        //     foreach ($sortedKepeseng as $sortedItem) {
-        //         if ($item['original_index'] === $sortedItem['original_index']) {
-        //             $item['peringkat'] = $sortedItem['peringkat'];
-        //             break;
-        //         }
-        //     }
-        // }
-
 
         // Mengurutkan array berdasarkan nilai_sequence dari yang terkecil ke terbesar
         usort($kepeseng, function ($a, $b) {
@@ -186,45 +154,40 @@ class DashboardController extends Controller
             }
         }
 
-//         $totals = array();
-
-// // Inisialisasi total untuk setiap kelas menjadi 0
-// foreach ($kepeseng as $item) {
-    // $kelas = $item['kelas'];
-    // $totals[$kelas] = 0;
-// }
-
-// // Menghitung total data "Ya" untuk setiap kelas
-// foreach ($kepeseng as $item) {
-//     $kelas = $item['kelas'];
-//     if ($item['status'] == 'Ya') {
-//         $totals[$kelas]++;
-//     }
-// }
-        // $countClass = [];
-        // foreach ($kepeseng as $item) {
-        //     if ($item['status'] == 'Ya') {
-        //         $kelas = $item['kelas'];
-        //         if (!isset($countClass[$kelas])) {
-        //             $countClass[$kelas] = 1;
-        //         } else {
-        //             $countClass[$kelas]++;
-        //         }
-        //     }
-        // }
-        // dd($countClass);
-
-        // // Membentuk array hasil yang berisi kelas dan jumlah
-        // $hasilCountKelas = [];
-        // foreach ($countClass as $kelas => $jumlah) {
-        //     $hasilCountKelas[] = [
-        //         'kelas' => $kelas,
-        //         'jumlah' => $jumlah,
-        //     ];
-        // }
+        $countClass = [];
+        foreach ($kepeseng as &$item) {
+            if ($item['status'] == 'Ya') {
+                $countClass[] = [
+                    'x' => $item['x'],
+                    'y' => $item['y'],
+                ];
+            }
+        }
 
         $hasils = array_slice($sequenceDistance, 0, $nilaiK);
-        dd($kepeseng);
+
+        $kelas1Count = 0;
+        $kelas2Count = 0;
+
+        foreach ($hasils as $dataHasil) {
+            if ($dataHasil['kelas'] === $kelas1) {
+                $kelas1Count++;
+            } elseif ($dataHasil['kelas'] === $kelas2) {
+                $kelas2Count++;
+            }
+        }
+
+        if ($kelas1Count > $kelas2Count) {
+            $kelasTerbanyak = $kelas1;
+            $jumlahTerbanyak = $kelas1Count;
+        } elseif ($kelas2Count > $kelas1Count) {
+            $kelasTerbanyak = $kelas2;
+            $jumlahTerbanyak = $kelas2Count;
+        } else {
+            // Jika kelas1Count dan kelas2Count sama, Anda dapat menentukan tindakan yang sesuai
+            $kelasTerbanyak = 'Tidak ada kelas yang lebih banyak';
+            $jumlahTerbanyak = $kelas1Count; // Atau $kelas2Count, karena keduanya sama
+        }
 
         return view('TableResult', [
             'KNNYA' => $KNNYA,
@@ -232,6 +195,12 @@ class DashboardController extends Controller
             'DataUjiX' => $x,
             'DataUjiY' => $y,
             'NilaiK' => $nilaiK,
+            'kelas1' => $kelas1,
+            'kelas2' => $kelas2,
+            'countKelas1' => $kelas1Count,
+            'countKelas2' => $kelas2Count,
+            'hasilKlasifikasi' => $jumlahTerbanyak,
+            'kelasKlasifikasi' => $kelasTerbanyak,
         ]);
     }
 }
