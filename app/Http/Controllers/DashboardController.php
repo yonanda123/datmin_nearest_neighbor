@@ -163,35 +163,7 @@ class DashboardController extends Controller
             unset($item['original_index']);
         }
 
-        // Mengurutkan array $sequenceDistance berdasarkan nilai-nilai 'nilai' di dalamnya secara ascending menggunakan fungsi pembanding
-        usort($sequenceDistance, function ($a, $b) {
-            return $a['nilai'] <=> $b['nilai'];
-        });
-        // Memilih sejumlah $nilaiK elemen teratas dari array $sequenceDistance
-        $hasils = array_slice($sequenceDistance, 0, $nilaiK);
-        // Menghitung jumlah elemen dengan kelas yang sesuai (kelas1 atau kelas2) dalam array $hasils
-        $kelas1Count = 0;
-        $kelas2Count = 0;
-        foreach ($hasils as $dataHasil) {
-            if ($dataHasil['kelas'] === $kelas1) {
-                $kelas1Count++;
-            } elseif ($dataHasil['kelas'] === $kelas2) {
-                $kelas2Count++;
-            }
-        }
-        // Menentukan kelas dengan jumlah terbanyak berdasarkan perbandingan $kelas1Count dan $kelas2Count
-        if ($kelas1Count > $kelas2Count) {
-            $kelasTerbanyak = $kelas1;
-            $jumlahTerbanyak = $kelas1Count;
-        } elseif ($kelas2Count > $kelas1Count) {
-            $kelasTerbanyak = $kelas2;
-            $jumlahTerbanyak = $kelas2Count;
-        } else {
-            $kelasTerbanyak = 'Tidak ada kelas yang lebih banyak';
-            $jumlahTerbanyak = $kelas1Count;
-        }
-
-        // Melakukan iterasi pada array $ValueByClass menggunakan perulangan foreach
+         // Melakukan iterasi pada array $ValueByClass menggunakan perulangan foreach
         // Setiap elemen array ($item) diubah statusnya berdasarkan peringkatnya terhadap $nilaiK
         foreach ($ValueByClass as &$item) {
             // Memeriksa apakah peringkat ($item['peringkat']) kurang dari atau sama dengan $nilaiK
@@ -223,6 +195,34 @@ class DashboardController extends Controller
                     'y' => $item['y'],
                 ];
             }
+        }
+
+        // Mengurutkan array $sequenceDistance berdasarkan nilai-nilai 'nilai' di dalamnya secara ascending menggunakan fungsi pembanding
+        usort($sequenceDistance, function ($a, $b) {
+            return $a['nilai'] <=> $b['nilai'];
+        });
+        // Memilih sejumlah $nilaiK elemen teratas dari array $sequenceDistance
+        $hasils = array_slice($sequenceDistance, 0, $nilaiK);
+        // Menghitung jumlah elemen dengan kelas yang sesuai (kelas1 atau kelas2) dalam array $hasils
+        $kelas1Count = 0;
+        $kelas2Count = 0;
+        foreach ($hasils as $dataHasil) {
+            if ($dataHasil['kelas'] === $kelas1) {
+                $kelas1Count++;
+            } elseif ($dataHasil['kelas'] === $kelas2) {
+                $kelas2Count++;
+            }
+        }
+        // Menentukan kelas dengan jumlah terbanyak berdasarkan perbandingan $kelas1Count dan $kelas2Count
+        if ($kelas1Count > $kelas2Count) {
+            $kelasTerbanyak = $kelas1;
+            $jumlahTerbanyak = $kelas1Count;
+        } elseif ($kelas2Count > $kelas1Count) {
+            $kelasTerbanyak = $kelas2;
+            $jumlahTerbanyak = $kelas2Count;
+        } else {
+            $kelasTerbanyak = 'Tidak ada kelas yang lebih banyak';
+            $jumlahTerbanyak = $kelas1Count;
         }
 
         return view('TableResult', [

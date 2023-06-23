@@ -9,7 +9,7 @@
         @csrf
         <div class="container mx-auto">
             <p class="font-bold mb-2">Input Nilai K</p>
-            <input type="number" name="nilaiK" placeholder="NILAI K" class="w-32" />
+            <input type="number" name="nilaiK" placeholder="Input Nilai 1-10" class="w-44" />
         </div>
         <br>
         <hr>
